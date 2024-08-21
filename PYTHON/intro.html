@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 20px;
+            color: #ffffff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        .result {
+            margin-top: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        h2 {
+            font-size: 28px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="pregunta1">
+        <h2>Pregunta 1: ¿Cómo se llama la obra?</h2>
+        <button class="button" onclick="verificarRespuesta('pregunta1', 'la primera llamada')">La primera llamada</button>
+        <button class="button" onclick="verificarRespuesta('pregunta1', 'la segunda llamada')">La segunda llamada</button>
+        <button class="button" onclick="verificarRespuesta('pregunta1', 'la tercera llamada')">La tercera llamada</button>
+    </div>
+
+    <div id="pregunta2" class="hidden">
+        <h2>Pregunta 2: ¿Cómo se llamó el protagonista?</h2>
+        <button class="button" onclick="verificarRespuesta('pregunta2', 'Lázaro')">Lázaro</button>
+        <button class="button" onclick="verificarRespuesta('pregunta2', 'Luis')">Luis</button>
+        <button class="button" onclick="verificarRespuesta('pregunta2', 'Carlos')">Carlos</button>
+    </div>
+
+    <div id="pregunta3" class="hidden">
+        <h2>Pregunta 3: ¿Lázaro fue listo?</h2>
+        <button class="button" onclick="verificarRespuesta('pregunta3', 'si')">Sí</button>
+        <button class="button" onclick="verificarRespuesta('pregunta3', 'no')">No</button>
+    </div>
+
+    <div id="pregunta4" class="hidden">
+        <h2>Pregunta 4: ¿Quién lo adoptó al final?</h2>
+        <button class="button" onclick="verificarRespuesta('pregunta4', 'el pastor')">El pastor</button>
+        <button class="button" onclick="verificarRespuesta('pregunta4', 'el ciego')">El ciego</button>
+        <button class="button" onclick="verificarRespuesta('pregunta4', 'los reyes')">Los reyes</button>
+    </div>
+
+    <div id="resultados" class="hidden">
+        <h2>¡Resultados Finales!</h2>
+        <div id="resultado" class="result"></div>
+        <div id="mensaje" class="result"></div>
+        <button class="button" onclick="volverInicio()">Volver al Inicio</button>
+        <a href="C:\Users\delfin.munoz\ONE DRIVE GOLD DATA\OneDrive - Golddata\Escritorio\PYTHON\memexd.html" class="button" onclick="iniciarJuego()">Comenzar</a>
+    </div>
+
+    <script>
+        function verificarRespuesta(pregunta, respuestaSeleccionada) {
+            let respuestaCorrecta;
+            switch (pregunta) {
+                case 'pregunta1':
+                    respuestaCorrecta = 'la segunda llamada';
+                    break;
+                case 'pregunta2':
+                    respuestaCorrecta = 'Lázaro';
+                    break;
+                case 'pregunta3':
+                    respuestaCorrecta = 'si';
+                    break;
+                case 'pregunta4':
+                    respuestaCorrecta = 'los reyes';
+                    break;
+            }
+
+            let puntos = parseInt(localStorage.getItem('puntos')) || 0;
+
+            if (respuestaSeleccionada === respuestaCorrecta) {
+                puntos += 3; // Aumentar 3 puntos si la respuesta es correcta
+                alert("¡Respuesta correcta! +3 puntos.");
+            } else {
+                alert("Respuesta incorrecta.");
+            }
+
+            localStorage.setItem('puntos', puntos); // Guardar la puntuación en localStorage
+            console.log(`Puntos actuales: ${puntos}`); // Verificar en la consola
+
+            // Mostrar la siguiente pregunta o los resultados
+            mostrarSiguientePregunta(pregunta);
+        }
+
+        function mostrarSiguientePregunta(preguntaActual) {
+            const preguntas = ['pregunta1', 'pregunta2', 'pregunta3', 'pregunta4', 'resultados'];
+            const indiceActual = preguntas.indexOf(preguntaActual);
+            const siguienteIndice = indiceActual + 1;
+            
+            if (siguienteIndice < preguntas.length) {
+                document.getElementById(preguntaActual).classList.add('hidden');
+                document.getElementById(preguntas[siguienteIndice]).classList.remove('hidden');
+            } else {
+                document.getElementById(preguntaActual).classList.add('hidden');
+                document.getElementById('resultados').classList.remove('hidden');
+                mostrarResultados();
+            }
+        }
+
+        function mostrarResultados() {
+            // Obtener la puntuación final de localStorage
+            let puntos = parseInt(localStorage.getItem('puntos')) || 0;
+
+            // Mostrar la puntuación final
+            document.getElementById('resultado').innerText = `Tu puntuación final es: ${puntos} puntos`;
+
+            // Determinar el mensaje basado en la puntuación
+            let mensaje;
+            if (puntos >= 12) {
+                mensaje = "¡Excelente trabajo! 🏆 Has demostrado un gran conocimiento.";
+            } else if (puntos >= 9) {
+                mensaje = "¡Muy bien hecho! 🎉 Has tenido un desempeño sobresaliente.";
+            } else if (puntos >= 6) {
+                mensaje = "¡Buen trabajo! 👍 Has hecho un buen esfuerzo.";
+            } else if (puntos >= 3) {
+                mensaje = "¡Puedes hacerlo mejor! 💪 Sigue practicando para mejorar.";
+            } else {
+                mensaje = "¡Inténtalo de nuevo! 😓 No te desanimes, cada error es una oportunidad para aprender.";
+            }
+
+            // Mostrar el mensaje basado en la puntuación
+            document.getElementById('mensaje').innerText = mensaje;
+        }
+
+        function volverInicio() {
+            localStorage.removeItem('puntos'); // Eliminar la puntuación antes de comenzar de nuevo
+            location.reload(); // Recargar la página para volver al inicio
+        }
+
+        function iniciarNuevoReto() {
+            localStorage.removeItem('puntos'); // Eliminar la puntuación antes de comenzar un nuevo reto
+            window.location.href = 'C:\Users\delfin.munoz\ONE DRIVE GOLD DATA\OneDrive - Golddata\Documentos\español\memexd.html'; // Redirige a la página del próximo reto
+        }
+
+        // Mostrar la primera pregunta al cargar la página
+        window.onload = function() {
+            document.getElementById('pregunta1').classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>
